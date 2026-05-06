@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mascot Service UI</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --text: #162033;
+      --muted: #5f6b7a;
+      --primary: #2f6fed;
+      --primary-dark: #1f57c4;
+      --border: #dfe6f2;
+      --ok: #1f9d55;
+      --error: #d93025;
+      --shadow: 0 10px 24px rgba(19, 37, 73, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top, #eef4ff 0%, var(--bg) 40%);
+      color: var(--text);
+    }
+    .container {
+      max-width: 1050px;
+      margin: 2rem auto;
+      padding: 0 1rem 2rem;
+    }
+    .hero {
+      background: linear-gradient(135deg, #2f6fed 0%, #5090ff 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+    .hero h1 { margin: 0 0 .3rem; font-size: 1.6rem; }
+    .hero p { margin: 0; opacity: .95; }
+    .hero .byline { margin-top: .35rem; font-size: .9rem; opacity: .9; }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+    h2 { margin: 0 0 .75rem; font-size: 1.05rem; }
+    .row { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: .58rem .9rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: var(--primary-dark); }
+    input {
+      flex: 1;
+      min-width: 260px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .58rem .65rem;
+      outline: none;
+      background: #fff;
+    }
+    input:focus { border-color: #8caef7; box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15); }
+
+    .status {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: .84rem;
+      padding: .22rem .62rem;
+      background: #e8eefb;
+      color: #26427a;
+      margin-bottom: .75rem;
+      font-weight: 600;
+    }
+    .status.ok { background: #e6f6ed; color: var(--ok); }
+    .status.error { background: #fbe9e8; color: var(--error); }
+
+    pre {
+      background: #0f172a;
+      color: #d3e4ff;
+      border-radius: 10px;
+      padding: .9rem;
+      margin: 0;
+      overflow: auto;
+      max-height: 300px;
+    }
+    .table-scroll { overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { border-bottom: 1px solid #edf2fa; padding: .62rem; text-align: left; white-space: nowrap; }
+    th { background: #f8faff; position: sticky; top: 0; }
+    tbody tr:hover { background: #f9fbff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Mascot Microservice UI</h1>
+      <p>Explore mascot data with a clean dashboard view.</p>
+      <div class="byline">Project Developer: MS Vinod kumar</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Get all mascots</h2>
+        <button id="btnAll">Load /</button>
+      </div>
+
+      <div class="card">
+        <h2>Get mascot by GUID</h2>
+        <div class="row">
+          <input id="guidInput" type="text" placeholder="Enter mascot guid">
+          <button id="btnOne">Load /&lt;guid&gt;</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="status" class="status">Ready</div>
+      <h2>Response (JSON)</h2>
+      <pre id="output">Click a button to call the API.</pre>
+      <h2 style="margin-top: 1rem;">Response (Table)</h2>
+      <div id="tableWrap">Table will appear here.</div>
+    </div>
+  </div>
+
+  <script>
+    const output = document.getElementById('output');
+    const tableWrap = document.getElementById('tableWrap');
+    const statusBadge = document.getElementById('status');
+
+    function setStatus(text, type = '') {
+      statusBadge.textContent = text;
+      statusBadge.className = `status ${type}`.trim();
+    }
+
+    function toRows(data) {
+      return Array.isArray(data) ? data : [data];
+    }
+
+    function renderTable(data) {
+      if (!data || (Array.isArray(data) && data.length === 0)) {
+        tableWrap.textContent = 'No data found.';
+        return;
+      }
+
+      const rows = toRows(data);
+      const columns = [...new Set(rows.flatMap((item) => Object.keys(item)))];
+
+      const thead = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
+      const tbody = `<tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${row[c] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody>`;
+
+      tableWrap.innerHTML = `<div class="table-scroll"><table>${thead}${tbody}</table></div>`;
+    }
+
+    async function callApi(path) {
+      setStatus(`Loading ${path}...`);
+      output.textContent = `Loading ${path}...`;
+      try {
+        const response = await fetch(path);
+        const data = await response.json();
+        output.textContent = JSON.stringify({ status: response.status, data }, null, 2);
+        if (response.ok) {
+          setStatus(`Success (${response.status})`, 'ok');
+          renderTable(data);
+        } else {
+          setStatus(`Error (${response.status})`, 'error');
+          tableWrap.textContent = 'No table for error response.';
+        }
+      } catch (error) {
+        setStatus('Request failed', 'error');
+        output.textContent = `Request failed: ${error}`;
+        tableWrap.textContent = 'No table available.';
+      }
+    }
+
+    document.getElementById('btnAll').addEventListener('click', () => callApi('/'));
+    document.getElementById('btnOne').addEventListener('click', () => {
+      const guid = document.getElementById('guidInput').value.trim();
+      if (!guid) {
+        output.textContent = 'Please enter a guid.';
+        return;
+      }
+      callApi(`/${encodeURIComponent(guid)}`);
+    });
+  </script>
+</body>
+</html>
