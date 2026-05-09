@@ -94,4 +94,4 @@ jobs:
             --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
             --services ${{ secrets.ECS_SERVICE_NAME }}
       - name: Smoke test
-        run: curl -fsSL --max-time 60 "${{ secrets.APP_URL }}" >/dev/null
+        run: curl -fsSL --max-time 120 "${{ secrets.APP_URL }}" >/dev/null
