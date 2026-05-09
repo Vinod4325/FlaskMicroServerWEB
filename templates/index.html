@@ -6,136 +6,323 @@
   <title>Mascot Service UI</title>
   <style>
     :root {
-      --bg: #f4f7fb;
+      --bg: #f0f4f9;
       --surface: #ffffff;
-      --text: #162033;
-      --muted: #5f6b7a;
-      --primary: #2f6fed;
-      --primary-dark: #1f57c4;
-      --border: #dfe6f2;
-      --ok: #1f9d55;
-      --error: #d93025;
-      --shadow: 0 10px 24px rgba(19, 37, 73, 0.08);
+      --text: #1a202c;
+      --muted: #718096;
+      --primary: #3182ce;
+      --primary-dark: #2c5aa0;
+      --primary-light: #ebf8ff;
+      --border: #e2e8f0;
+      --ok: #22863a;
+      --error: #cb2431;
+      --warning: #f6a028;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.12);
     }
 
     * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: radial-gradient(circle at top, #eef4ff 0%, var(--bg) 40%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       color: var(--text);
+      min-height: 100vh;
     }
+    
     .container {
-      max-width: 1050px;
-      margin: 2rem auto;
-      padding: 0 1rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
     }
-    .hero {
-      background: linear-gradient(135deg, #2f6fed 0%, #5090ff 100%);
-      color: #fff;
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
-      box-shadow: var(--shadow);
-      margin-bottom: 1rem;
-    }
-    .hero h1 { margin: 0 0 .3rem; font-size: 1.6rem; }
-    .hero p { margin: 0; opacity: .95; }
-    .hero .byline { margin-top: .35rem; font-size: .9rem; opacity: .9; }
 
-    .grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+      text-align: center;
     }
+    .header h1 { 
+      margin: 0 0 0.5rem; 
+      font-size: 2rem; 
+      font-weight: 700;
+    }
+    .header p { 
+      margin: 0 0 1rem; 
+      opacity: 0.95; 
+      font-size: 1.05rem;
+    }
+    .header .meta {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      font-size: 0.9rem;
+      opacity: 0.9;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .controls {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      margin-bottom: 2rem;
+    }
+    
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 1rem;
+      padding: 1.5rem;
       box-shadow: var(--shadow);
+      transition: all 0.3s ease;
     }
-    h2 { margin: 0 0 .75rem; font-size: 1.05rem; }
-    .row { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-light);
+    }
+
+    .card h2 { 
+      margin: 0 0 1rem; 
+      font-size: 1.1rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    input {
+      flex: 1;
+      min-width: 200px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      outline: none;
+      font-size: 1rem;
+      background: #fff;
+      transition: all 0.2s ease;
+    }
+    input:focus { 
+      border-color: var(--primary); 
+      box-shadow: 0 0 0 4px var(--primary-light);
+      background: #fafbfc;
+    }
+    input::placeholder { color: var(--muted); }
 
     button {
       background: var(--primary);
       color: #fff;
-      border: 0;
+      border: none;
       border-radius: 8px;
-      padding: .58rem .9rem;
+      padding: 0.75rem 1.5rem;
       cursor: pointer;
       font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
-    button:hover { background: var(--primary-dark); }
-    input {
-      flex: 1;
-      min-width: 260px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .58rem .65rem;
-      outline: none;
-      background: #fff;
+    button:hover { 
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
     }
-    input:focus { border-color: #8caef7; box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15); }
+    button:active { transform: translateY(0); }
+    button:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+      font-size: 0.85rem;
+      padding: 0.5rem 0.75rem;
+    }
+    .btn-secondary:hover {
+      background: #d0d8e4;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .status {
-      display: inline-block;
-      border-radius: 999px;
-      font-size: .84rem;
-      padding: .22rem .62rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
       background: #e8eefb;
       color: #26427a;
-      margin-bottom: .75rem;
+      margin-bottom: 1rem;
       font-weight: 600;
     }
-    .status.ok { background: #e6f6ed; color: var(--ok); }
-    .status.error { background: #fbe9e8; color: var(--error); }
+    .status.ok { 
+      background: #d1e7dd;
+      color: var(--ok);
+    }
+    .status.error { 
+      background: #f8d7da;
+      color: var(--error);
+    }
+    .status.loading {
+      background: #cfe2ff;
+      color: #084298;
+    }
+
+    .results {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      margin: 1.5rem 0 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
 
     pre {
-      background: #0f172a;
-      color: #d3e4ff;
-      border-radius: 10px;
-      padding: .9rem;
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
       margin: 0;
       overflow: auto;
-      max-height: 300px;
+      max-height: 350px;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
-    .table-scroll { overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
-    table { width: 100%; border-collapse: collapse; background: #fff; }
-    th, td { border-bottom: 1px solid #edf2fa; padding: .62rem; text-align: left; white-space: nowrap; }
-    th { background: #f8faff; position: sticky; top: 0; }
-    tbody tr:hover { background: #f9fbff; }
+
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .json-wrapper {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .table-scroll { 
+      overflow: auto; 
+      border: 1px solid var(--border); 
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      background: #fff;
+    }
+    th { 
+      background: #f8f9fa;
+      color: var(--text);
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      font-size: 0.9rem;
+    }
+    td { 
+      border-bottom: 1px solid var(--border); 
+      padding: 0.75rem;
+      word-break: break-word;
+      max-width: 300px;
+    }
+    tbody tr:hover { background: #f9fafb; }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+    }
+    .empty-state p { margin: 0; font-size: 1.05rem; }
+
+    @media (max-width: 640px) {
+      .header { padding: 1.5rem; }
+      .header h1 { font-size: 1.5rem; }
+      .input-group { flex-direction: column; }
+      input, button { width: 100%; }
+      .controls { grid-template-columns: 1fr; }
+      pre { max-height: 250px; font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="hero">
-      <h1>Mascot Microservice UI</h1>
-      <p>Explore mascot data with a clean dashboard view.</p>
-      <div class="byline">Project Developer: MS Vinod kumar </div>
+    <div class="header">
+      <h1>🎓 Mascot Microservice</h1>
+      <p>Discover and explore university mascot data</p>
+      <div class="meta">
+        <span>📍 Built with Flask</span>
+        <span>🚀 AWS ECS Fargate Deployment</span>
+        <span>💾 Developer: Vinod Kumar</span>
+      </div>
     </div>
 
-    <div class="grid">
+    <div class="controls">
       <div class="card">
-        <h2>Get all mascots</h2>
-        <button id="btnAll">Load /</button>
+        <h2>📋 Load All Mascots</h2>
+        <p style="margin: 0 0 1rem; color: var(--muted); font-size: 0.9rem;">Fetch the complete list of all available mascots</p>
+        <button id="btnAll">Load Data</button>
       </div>
 
       <div class="card">
-        <h2>Get mascot by GUID</h2>
-        <div class="row">
-          <input id="guidInput" type="text" placeholder="Enter mascot guid">
-          <button id="btnOne">Load /&lt;guid&gt;</button>
+        <h2>🔍 Search by GUID</h2>
+        <p style="margin: 0 0 1rem; color: var(--muted); font-size: 0.9rem;">Look up a specific mascot using its unique identifier</p>
+        <div class="input-group">
+          <input id="guidInput" type="text" placeholder="Enter mascot GUID">
+          <button id="btnOne">Search</button>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div id="status" class="status">Ready</div>
-      <h2>Response (JSON)</h2>
-      <pre id="output">Click a button to call the API.</pre>
-      <h2 style="margin-top: 1rem;">Response (Table)</h2>
-      <div id="tableWrap">Table will appear here.</div>
+    <div class="results">
+      <div id="status" class="status">✓ Ready</div>
+
+      <div class="section-title">API Response (JSON)</div>
+      <div class="json-wrapper">
+        <button class="btn-secondary copy-btn" id="copyBtn" style="display: none;">📋 Copy</button>
+        <pre id="output">Click a button to call the API.</pre>
+      </div>
+
+      <div class="section-title">Data Table View</div>
+      <div id="tableWrap" class="empty-state">
+        <p>ℹ️ Table will appear here after loading data</p>
+      </div>
     </div>
   </div>
 
@@ -143,10 +330,22 @@
     const output = document.getElementById('output');
     const tableWrap = document.getElementById('tableWrap');
     const statusBadge = document.getElementById('status');
+    const copyBtn = document.getElementById('copyBtn');
+    const btnAll = document.getElementById('btnAll');
+    const btnOne = document.getElementById('btnOne');
+
+    let lastData = null;
 
     function setStatus(text, type = '') {
       statusBadge.textContent = text;
       statusBadge.className = `status ${type}`.trim();
+    }
+
+    function setButtonState(disabled) {
+      btnAll.disabled = disabled;
+      btnOne.disabled = disabled;
+      btnAll.innerHTML = disabled ? '<span class="spinner"></span>Loading...' : 'Load Data';
+      btnOne.innerHTML = disabled ? '<span class="spinner"></span>Searching...' : 'Search';
     }
 
     function toRows(data) {
@@ -155,7 +354,7 @@
 
     function renderTable(data) {
       if (!data || (Array.isArray(data) && data.length === 0)) {
-        tableWrap.textContent = 'No data found.';
+        tableWrap.innerHTML = '<div class="empty-state"><p>No data found.</p></div>';
         return;
       }
 
@@ -163,40 +362,72 @@
       const columns = [...new Set(rows.flatMap((item) => Object.keys(item)))];
 
       const thead = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
-      const tbody = `<tbody>${rows.map((row) => `<tr>${columns.map((c) => `<td>${row[c] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody>`;
+      const tbody = `<tbody>${rows.map((row) => `<tr>${columns.map((c) => {
+        const val = row[c] ?? '';
+        const displayVal = typeof val === 'string' ? (val.length > 50 ? val.substring(0, 47) + '...' : val) : val;
+        return `<td title="${val}">${displayVal}</td>`;
+      }).join('')}</tr>`).join('')}</tbody>`;
 
       tableWrap.innerHTML = `<div class="table-scroll"><table>${thead}${tbody}</table></div>`;
     }
 
     async function callApi(path) {
-      setStatus(`Loading ${path}...`);
-      output.textContent = `Loading ${path}...`;
+      setStatus('Loading...', 'loading');
+      setButtonState(true);
+      output.textContent = `Fetching ${path}...`;
+      copyBtn.style.display = 'none';
+
       try {
         const response = await fetch(path);
         const data = await response.json();
-        output.textContent = JSON.stringify({ status: response.status, data }, null, 2);
+        
+        lastData = JSON.stringify({ status: response.status, data }, null, 2);
+        output.textContent = lastData;
+        copyBtn.style.display = 'block';
+
         if (response.ok) {
-          setStatus(`Success (${response.status})`, 'ok');
+          setStatus(`✓ Success (${response.status})`, 'ok');
           renderTable(data);
         } else {
-          setStatus(`Error (${response.status})`, 'error');
-          tableWrap.textContent = 'No table for error response.';
+          setStatus(`✗ Error (${response.status})`, 'error');
+          tableWrap.innerHTML = '<div class="empty-state"><p>No table for error response.</p></div>';
         }
       } catch (error) {
-        setStatus('Request failed', 'error');
-        output.textContent = `Request failed: ${error}`;
-        tableWrap.textContent = 'No table available.';
+        setStatus('✗ Request failed', 'error');
+        output.textContent = `Request failed: ${error.message}\n\nMake sure the API server is reachable.`;
+        tableWrap.innerHTML = '<div class="empty-state"><p>Error loading data.</p></div>';
+      } finally {
+        setButtonState(false);
       }
     }
 
-    document.getElementById('btnAll').addEventListener('click', () => callApi('/'));
-    document.getElementById('btnOne').addEventListener('click', () => {
+    btnAll.addEventListener('click', () => callApi('/'));
+    
+    btnOne.addEventListener('click', () => {
       const guid = document.getElementById('guidInput').value.trim();
       if (!guid) {
-        output.textContent = 'Please enter a guid.';
+        output.textContent = 'Please enter a GUID to search.';
         return;
       }
       callApi(`/${encodeURIComponent(guid)}`);
+    });
+
+    document.getElementById('guidInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        btnOne.click();
+      }
+    });
+
+    copyBtn.addEventListener('click', () => {
+      if (lastData) {
+        navigator.clipboard.writeText(lastData).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = '✓ Copied!';
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+          }, 2000);
+        });
+      }
     });
   </script>
 </body>
