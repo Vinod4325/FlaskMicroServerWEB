@@ -16,4 +16,4 @@ Files include:
 Deploy Commands : 
 
 	docker pull ghcr.io/vinod4325/flaskmicroserverweb/flask-app:latest 	
-	docker run -d --name flask-app --restart always -p 80:8080 ghcr.io/vinod4325/flaskmicroserverweb/flask-app:latest 	
+	docker run -d --name flask-app --restart always -p 8080:5000 ghcr.io/vinod4325/flaskmicroserverweb/flask-app:latest 	
