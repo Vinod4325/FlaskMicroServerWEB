@@ -1,0 +1,49 @@
+
+name: GitHub CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet --requirement requirements.txt
+      - run: flake8 --ignore=E501,E231 *.py
+      - run: pylint --errors-only --disable=C0301 --disable=C0326 *.py
+      - run: python -m unittest --verbose --failfast
+
+  deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image to GHCR
+        env:
+          IMAGE_NAME: ghcr.io/${{ github.repository }}/flask-app
+        run: |
+          IMAGE_NAME=$(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]')
+          IMAGE_TAG=${GITHUB_SHA::7}
+          docker build -t "$IMAGE_NAME:$IMAGE_TAG" -t "$IMAGE_NAME:latest" .
+          docker push "$IMAGE_NAME:$IMAGE_TAG"
+          docker push "$IMAGE_NAME:latest"
